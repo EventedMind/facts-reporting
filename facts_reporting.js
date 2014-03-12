@@ -1,3 +1,5 @@
+//SIG intercept
+
 var DEFAULT_SAMPLING_RATE = 1000 * 60; // every 1 min
 
 var Fiber = Npm.require('fibers');
@@ -19,20 +21,13 @@ FactsReporting = {
 
   setProvider: function (provider) {
     var fn;
-    var ctor;
     var inst;
 
     if (_.isString(provider)) {
-      ctor = FactsReporting.providers[provider];
-      if (ctor) {
-        inst = new ctor;
-        fn = _.bind(inst.report, inst);
-      }
+      fn = FactsReporting.providers[provider];
     } else if (_.isFunction(provider)) {
       fn = provider;
-    } else if (_.isObject(provider)) {
-      fn = _.bind(provider.report, provider);
-    }
+    } 
 
     if (!fn) {
       throw new Error('FactsReporting: Unable to setProvider with ' + EJSON.stringify(provider));

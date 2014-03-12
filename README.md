@@ -25,6 +25,20 @@ export AWS_REGION="us-west-1"
   });
 ```
 
+### Custom Provider
+
+**server/app.js**
+```javascript
+  FactsReporting.configure({
+    provider: function (facts) {
+      // do something fancy
+    },
+
+    // every 1 min is the default
+    rate: 60 * 1000
+  });
+```
+
 ### Developer Notes
 
 * CloudWatch dimensions are currently InstanceId and NameTag.
