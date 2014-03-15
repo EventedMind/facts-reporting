@@ -147,7 +147,8 @@ CloudWatchReporter.prototype = {
   }
 };
 
-FactsReporting.providers.CloudWatch = function () {
-  var inst = new CloudWatchReporter;
-  return _.bind(inst.report, inst);
+var inst = new CloudWatchReporter;
+
+FactsReporting.providers.CloudWatch = function (facts) {
+  return inst.report(facts);
 };
