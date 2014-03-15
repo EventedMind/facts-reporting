@@ -1,8 +1,7 @@
-//SIG intercept
-
 var DEFAULT_SAMPLING_RATE = 1000 * 60; // every 1 min
-
 var Fiber = Npm.require('fibers');
+
+Log.outputFormat = 'colored-text';
 
 FactsReporting = {
   isRunning: false,
@@ -40,19 +39,24 @@ FactsReporting = {
   run: function () {
     var self = this;
 
-    if (this.isRunning)
+    if (this.isRunning) {
+      Log.warn('<facts-reporting> Already running.');
       return;
+    }
 
+    this.isRunning = true;
+
+    Log.warn('<facts-reporting> Running FactsReporting scheduler');
     Fiber(function () {
       self._intervalId = Meteor.setInterval(function () {
-        if (!self.isRunning)
+        if (!self.isRunning) {
+          Log.warn('<facts-reporting> Called FactsReporting is not running');
           return;
-
+        }
+        Log.info('<facts-reporting> Reporting facts');
         self._provider(self.facts());
       }, self.samplingRate());
     }).run();
-
-    this.isRunning = true;
   },
 
   stop: function () {
@@ -116,6 +120,9 @@ FactsReporting.providers = {};
 
 Meteor.startup(function () {
   Meteor.defer(function () {
-    FactsReporting.run();  
+    if (FactsReporting.options.autoRun !== false)
+      FactsReporting.run();
+    else
+      Log.warn('<facts-reporting> autoRun is false so not starting automatically');
   });
 });
